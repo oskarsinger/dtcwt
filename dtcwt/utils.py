@@ -23,9 +23,9 @@ def reflect(X, minx, maxx):
 
 def get_wavelet_basis(wavelet_name):
 
-    path_items = [os.pardir] * 2 + [
+    path_items = [
+        os.pardir,
         'constants', 
-        'wavelets',
         wavelet_name + '.csv']
     path = os.path.join(*path_items)
 
