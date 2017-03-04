@@ -27,9 +27,8 @@ def get_partial_reconstructions(
         biorthogonal,
         qshift,
         gain_mask=mask * 0)
-    prs.append(Yl_pr)
 
-    return prs
+    return (prs, Yl_pr)
 
 def dtwavexfm(
     X, nlevels, biorthogonal, q_shift):
