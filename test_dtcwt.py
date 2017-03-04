@@ -1,6 +1,6 @@
 import click
 
-import wavelets.dtcwt as wdtcwt
+import dtcwt as wdtcwt
 import numpy as np
 
 @click.command()
