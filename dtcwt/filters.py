@@ -137,7 +137,7 @@ def get_column_d_filtered(X, ha, hb):
     begin_t = 5
     end_t = n + 2*m - 2
 
-    n2 = n/2
+    n2 = int(n/2)
     Y = np.zeros((n2, p))
     begin2 = 0
     end2 = n2
