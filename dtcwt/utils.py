@@ -24,6 +24,7 @@ def reflect(X, minx, maxx):
 def get_wavelet_basis(wavelet_name):
 
     path_items = [
+        os.path.split(os.path.realpath(__file__))[0],
         os.pardir,
         'constants', 
         wavelet_name + '.csv']
@@ -56,7 +57,7 @@ def get_padded_wavelets(Yh, Yl):
     for (i, y) in enumerate(hi_and_lo[1:]):
         power = i + 1
 
-        for j in xrange(power):
+        for j in range(power):
             max_len = basis[j::2**power,power].shape[0]
             basis[j::2**power,power] = np.copy(y[:max_len,0])
 

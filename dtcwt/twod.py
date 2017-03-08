@@ -1,6 +1,6 @@
 import numpy as np
 
-import filters
+from . import filters
 
 def dtwavexfm2(
     X, 
@@ -56,7 +56,7 @@ def dtwavexfm2(
         Y_scale[0] = np.copy(LoLo)
 
     if nlevels >= 2:
-        for level in xrange(1, nlevels):
+        for level in range(1, nlevels):
             (n, p) = LoLo.shape
 
             # Extend by 2 rows if no. of rows of LoLo are divisable by 4
@@ -67,7 +67,7 @@ def dtwavexfm2(
             if p % 4 > 0:
                 LoLo = np.vstack([LoLo[:,0], LoLo, LoLo[:,-1]]).T
 
-            print LoLo.shape
+            print( LoLo.shape )
 
             # Do even Qshift filters on rows
             Lo = filters.get_column_d_filtered(LoLo, h0b, h0a).T
@@ -75,7 +75,7 @@ def dtwavexfm2(
 
             # Do even Qshift filters on columns
             LoLo = filters.get_column_d_filtered(Lo, h0b, h0a).T
-            print LoLo.shape
+            print( LoLo.shape )
             (n, p) = LoLo.shape
             Yh[level] = np.zeros((n/2, p/2, 6))
             Yh[level][:,:,[0,5]] = q2c(

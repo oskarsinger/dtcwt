@@ -1,6 +1,6 @@
 import numpy as np
 
-import filters
+from . import filters
 
 def get_partial_reconstructions(
     Yh, Yl, biorthogonal, qshift):
@@ -9,7 +9,7 @@ def get_partial_reconstructions(
     Ylz = np.zeros_like(Yl)
     mask = np.zeros((1,len(Yh)))
 
-    for i in xrange(len(Yh)):
+    for i in range(len(Yh)):
         mask = mask * 0
         mask[0,i] = 1
         pr = dtwaveifm(
@@ -104,7 +104,7 @@ def dtwaveifm(
         
     Lo = np.copy(Yl)
 
-    for level in reversed(xrange(1,nlevels)): 
+    for level in reversed(range(1,nlevels)): 
         Hi = c2q1d(Yh[level] * gain_mask[:,level])
         Lo_filt = filters.get_column_i_filtered(
             Lo, g0b, g0a)

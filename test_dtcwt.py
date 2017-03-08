@@ -34,9 +34,9 @@ def run_it_all_day(
         error = np.abs(Z-X).max()
 
         if error < 10**(-12):
-            print 'Ur gud, dood'
+            print( 'Ur gud, dood' )
         else:
-            print error
+            print( error )
 
     if twod:
         line_list = []

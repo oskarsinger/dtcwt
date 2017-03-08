@@ -1,7 +1,7 @@
 import numpy as np
 
+from . import utils as dtcwtu
 from scipy.signal import convolve2d as conv2
-import utils as dtcwtu
 
 # TODO: double check indexing to translate from Matlab to numpy
 
@@ -65,19 +65,19 @@ def get_column_i_filtered(X, ha, hb):
             begin_a = 3
             end_a = n + m
 
-        #print 'X[xe[begin_b-2:end_b-2:2],:]', X[xe[begin_b-2:end_b-2:2],:]
+        #print( 'X[xe[begin_b-2:end_b-2:2],:]', X[xe[begin_b-2:end_b-2:2],:] )
         Y[begin_s:end_s:4,:] = conv2(
             X[xe[begin_b-2:end_b-2:2],:], hae, 'valid')
-        #print 'Y[begin_s:end_s:4,:]', Y[begin_s:end_s:4,:]
+        #print( 'Y[begin_s:end_s:4,:]', Y[begin_s:end_s:4,:] )
         Y[begin_s+1:end_s+1:4,:] = conv2(
             X[xe[begin_a-2:end_a-2:2],:], hbe, 'valid')
-        #print 'Y[begin_s+1:end_s+1:4,:]', Y[begin_s+1:end_s+1:4,:]
+        #print( 'Y[begin_s+1:end_s+1:4,:]', Y[begin_s+1:end_s+1:4,:] )
         Y[begin_s+2:end_s+2:4,:] = conv2(
             X[xe[begin_b:end_b:2],:], hao, 'valid')
-        #print 'Y[begin_s+2:end_s+2:4,:]', Y[begin_s+2:end_s+2:4,:]
+        #print( 'Y[begin_s+2:end_s+2:4,:]', Y[begin_s+2:end_s+2:4,:] )
         Y[begin_s+3:end_s+3:4,:] = conv2(
             X[xe[begin_a:end_a:2],:], hbo, 'valid')
-        #print 'Y[begin_s+3:end_s+3:4,:]', Y[begin_s+3:end_s+3:4,:]
+        #print( 'Y[begin_s+3:end_s+3:4,:]', Y[begin_s+3:end_s+3:4,:] )
     else:
 
         begin_b = 2
@@ -91,20 +91,20 @@ def get_column_i_filtered(X, ha, hb):
             begin_b = 1
             end_b = n + m - 2
 
-        #print 'X[xe[begin_b:end_b:2],:]', X[xe[begin_b:end_b:2],:]
-        #print 'hao', hao
+        #print( 'X[xe[begin_b:end_b:2],:]', X[xe[begin_b:end_b:2],:] )
+        #print( 'hao', hao )
         Y[begin_s:end_s:4,:] = conv2(
             X[xe[begin_b:end_b:2],:], hao, 'valid')
-        #print 'Y[begin_s:end_s:4,:]', Y[begin_s:end_s:4,:]
+        #print( 'Y[begin_s:end_s:4,:]', Y[begin_s:end_s:4,:] )
         Y[begin_s+1:end_s+1:4,:] = conv2(
             X[xe[begin_a:end_a:2],:], hbo, 'valid')
-        #print 'Y[begin_s+1:end_s+1:4,:]', Y[begin_s+1:end_s+1:4,:]
+        #print( 'Y[begin_s+1:end_s+1:4,:]', Y[begin_s+1:end_s+1:4,:] )
         Y[begin_s+2:end_s+2:4,:] = conv2(
             X[xe[begin_b:end_b:2],:], hae, 'valid')
-        #print 'Y[begin_s+2:end_s+2:4,:]', Y[begin_s+2:end_s+2:4,:]
+        #print( 'Y[begin_s+2:end_s+2:4,:]', Y[begin_s+2:end_s+2:4,:] )
         Y[begin_s+3:end_s+3:4,:] = conv2(
             X[xe[begin_a:end_a:2],:], hbe, 'valid')
-        #print 'Y[begin_s+3:end_s+3:4,:]', Y[begin_s+3:end_s+3:4,:]
+        #print( 'Y[begin_s+3:end_s+3:4,:]', Y[begin_s+3:end_s+3:4,:] )
 
     return Y
 
@@ -151,11 +151,11 @@ def get_column_d_filtered(X, ha, hb):
         end1 = n2
 
     """
-    print 'Y[begin1:end1:2,:]', Y[begin1:end1:2,:]
-    print 'xe[begin_t-1:end_t-1:4]', xe[begin_t-1:end_t-1:4]
-    print 'xe[begin_t-3:end_t-3:4]', xe[begin_t-3:end_t-3:4]
-    print 'X[xe[begin_t-1:end_t-1:4],:]', X[xe[begin_t-1:end_t-1:4],:]
-    print 'X[xe[begin_t-3:end_t-3:4],:]', X[xe[begin_t-3:end_t-3:4],:]
+    print( 'Y[begin1:end1:2,:]', Y[begin1:end1:2,:] )
+    print( 'xe[begin_t-1:end_t-1:4]', xe[begin_t-1:end_t-1:4] )
+    print( 'xe[begin_t-3:end_t-3:4]', xe[begin_t-3:end_t-3:4] )
+    print( 'X[xe[begin_t-1:end_t-1:4],:]', X[xe[begin_t-1:end_t-1:4],:] )
+    print( 'X[xe[begin_t-3:end_t-3:4],:]', X[xe[begin_t-3:end_t-3:4],:] )
     """
     Y[begin1:end1:2,:] = conv2(X[xe[begin_t-1:end_t-1:4],:], hao, 'valid') + \
             conv2(X[xe[begin_t-3:end_t-3:4],:], hae, 'valid')
