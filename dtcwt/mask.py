@@ -10,6 +10,7 @@ from dtcwt.oned import get_partial_reconstructions as get_pr
 from linal.utils.misc import get_array_mod
 from math import log
 
+# TODO: implement CSV saving (and loading?) capability
 class DTCWTMask:
 
     def __init__(self,

@@ -10,8 +10,7 @@ import whitehorses.loaders.shortcuts as dlsh
 
 @click.command()
 @click.option('--data-path')
-@click.option('--wavelet-dir')
-@click.option('--save-dir', default='.')
+@click.option('--save-dir')
 @click.option('--num-subperiods', default=288)
 @click.option('--interpolate', default=False)
 @click.option('--max-freqs', default=7)
@@ -21,7 +20,6 @@ import whitehorses.loaders.shortcuts as dlsh
 @click.option('--csv', default=True)
 def run_it_all_day_bb(
     data_path,
-    wavelet_dir,
     save_dir,
     num_subperiods,
     interpolate,
@@ -35,10 +33,10 @@ def run_it_all_day_bb(
         data_path, max_hertz=max_hertz)
     servers = {s : [BS(dl) for dl in dls]
                for (s, dls) in loaders.items()}
-    wavelet_dir = os.path.join(
-        wavelet_dir, get_ts('DTCWT'))
+    save_dir = os.path.join(
+        save_dir, get_ts('DTCWT'))
 
-    os.mkdir(wavelet_dir) 
+    os.mkdir(save_dir) 
 
     if interpolate:
         servers = {s : [I1DM(ds) for ds in dss]
@@ -46,16 +44,20 @@ def run_it_all_day_bb(
 
     servers = {s : [DTCWTM(
                         ds, 
-                        wavelet_dir, 
+                        save_dir, 
                         magnitude=True,
                         pr=pr,
                         period=int(24*3600 / num_subperiods),
                         max_freqs=max_freqs,
                         overlap=overlap,
-                        save=save_dir,
+                        save=True,
                         csv=csv)
                     for ds in dss]
                for (s, dss) in servers.items()}
+
+    for s in servers:
+        for server in s:
+            server.get_data()
 
 if __name__=='__main__':
     run_it_all_day_bb()
