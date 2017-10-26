@@ -23,7 +23,8 @@ class DTCWTMask:
         serve_one_period=True,
         overlap=False,
         load=False,
-        save=False):
+        save=False,
+        csv=False):
 
         # For now, assume server is batch-style
         self.ds = ds
@@ -37,6 +38,7 @@ class DTCWTMask:
         self.serve_one_period = serve_one_period
         self.load = load
         self.save = save
+        self.csv = csv
 
         self.window = int(self.period * self.hertz)
         self.w_window = int(self.window / 2)
@@ -49,7 +51,7 @@ class DTCWTMask:
 
         # Probably put all this is a separate func
         data = None
-        hdf5_repo = None
+        repo = None
         dl = self.ds.get_status()['data_loader']
         name = '_'.join([
             's',
@@ -66,22 +68,35 @@ class DTCWTMask:
             save_load_path, name)
 
         if self.load:
-            hdf5_repo = h5py.File(
-                self.save_load_path, 'r')
+
+            repo = None
+
+            if self.csv:
+                os.mkdir(self.save_load_path)
+            else:
+                repo = h5py.File(
+                    self.save_load_path, 'r')
+
             data = None
-            num_batches = len(hdf5_repo)
+            num_batches = len(repo)
         elif self.save:
+            # If saving, then data has obvi not been transformed yet
             data = self.ds.get_data()
             num_batches = int(float(data.shape[0]) / self.window)
             data = np.reshape(
                 get_array_mod(data, self.window),
                 (num_batches, self.window))
-            hdf5_repo = h5py.File(
-                self.save_load_path, 'w')
+            repo = None
+
+            if self.csv:
+                os.mkdir(self.save_load_path)
+            else:
+                repo = h5py.File(
+                    self.save_load_path, 'w')
 
         self.num_batches = num_batches
         self.data = data
-        self.hdf5_repo = hdf5_repo
+        self.repo = repo
         self.current_w = None
 
     def get_data(self):
@@ -140,7 +155,11 @@ class DTCWTMask:
                 self._save(i, Yh, Yl)
 
         if self.pr:
-            (Yh, Yl) = get_pr(Yh, Yl, self.biorthogonal, self.qshift)
+            (Yh, Yl) = get_pr(
+                Yh, 
+                Yl, 
+                self.biorthogonal, 
+                self.qshift)
 
         wavelets = get_pw(Yh, Yl)
 
@@ -172,20 +191,32 @@ class DTCWTMask:
 
         key = str(i)
         
-        self.hdf5_repo.create_group(key)
+        if self.csv:
+            path = os.path.join(self.save_load_path, key)
 
-        group = self.hdf5_repo[key]
+            os.mkdir(path)
 
-        for (j, freq) in enumerate(Yh):
+            for (j, freq) in enumerate(Yh):
+                np.savetxt(
+                    'Yh_' + str(j) + '.csv', 
+                    freq,
+                    delimiter=',')
+        else:
+            self.repo.create_group(key)
+
+            group = self.repo[key]
+
+            for (j, freq) in enumerate(Yh):
+                group.create_dataset(
+                    'Yh_' + str(j), data=freq)
+
             group.create_dataset(
-                'Yh_' + str(j), data=freq)
-
-        group.create_dataset(
-            'Yl', data=freq)
+                'Yl', data=freq)
 
     def _load_wavelets(self, i):
 
-        group = self.hdf5_repo[str(i)]
+        # TODO: implement loading csv; not high priority
+        group = self.repo[str(i)]
         num_Yh = len(group) - 1
         Yh = [np.array(group['Yh_' + str(j)]) 
               for j in range(num_Yh)]
@@ -220,7 +251,7 @@ class DTCWTMask:
             'load': self.load,
             'save': self.save,
             'window': self.window,
-            'hdf5_repo': self.hdf5_repo}
+            'repo': self.repo}
 
         for (k, v) in self.ds.get_status().items():
             if k not in new_status:
