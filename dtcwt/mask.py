@@ -7,10 +7,11 @@ from drrobert.file_io import get_timestamped as get_ts
 from dtcwt.utils import get_padded_wavelets as get_pw
 from dtcwt.utils import get_wavelet_basis as get_wb
 from dtcwt.oned import get_partial_reconstructions as get_pr
+from dtcwt.oned import dtwavexfm
 from linal.utils.misc import get_array_mod
 from math import log
 
-# TODO: implement CSV saving (and loading?) capability
+# TODO: implement CSV loading
 class DTCWTMask:
 
     def __init__(self,
@@ -151,9 +152,6 @@ class DTCWTMask:
         else:
             (Yh, Yl) = self._get_new_wavelets(i)
 
-            if self.save:
-                self._save(i, Yh, Yl)
-
         if self.pr:
             (Yh, Yl) = get_pr(
                 Yh, 
@@ -165,7 +163,10 @@ class DTCWTMask:
 
         if self.magnitude:
             wavelets = np.absolute(wavelets)
-            
+
+        if self.save and not self.load:
+            self._save(i, wavelets)
+
         self.num_rounds += 1
 
         return wavelets
@@ -179,7 +180,7 @@ class DTCWTMask:
                 data,
                 self.data[i+1,:][:,np.newaxis]])
 
-        (Yl, Yh, _) = dtcwt.oned.dtwavexfm(
+        (Yl, Yh, _) = dtwavexfm(
             data,
             self.num_freqs - 1,
             self.biorthogonal,
@@ -187,35 +188,31 @@ class DTCWTMask:
 
         return (Yh, Yl)
 
-    def _save(self, i, Yh, Yl):
+    def _save(self, i, wavelets):
 
         key = str(i)
         
         if self.csv:
-            path = os.path.join(self.save_load_path, key)
+            dir_path = os.path.join(self.save_load_path, key)
 
-            os.mkdir(path)
+            os.mkdir(dir_path)
 
-            for (j, freq) in enumerate(Yh):
-                np.savetxt(
-                    'Yh_' + str(j) + '.csv', 
-                    freq,
-                    delimiter=',')
+            file_path = os.path.join(
+                dir_path,
+                'wavelets' + '.csv')
+
+            np.savetxt(
+                file_path,   
+                wavelets,
+                delimiter=',')
         else:
-            self.repo.create_group(key)
-
-            group = self.repo[key]
-
-            for (j, freq) in enumerate(Yh):
-                group.create_dataset(
-                    'Yh_' + str(j), data=freq)
-
-            group.create_dataset(
-                'Yl', data=freq)
+            self.repo.create_dataset(
+                key, data=wavelets)
 
     def _load_wavelets(self, i):
 
         # TODO: implement loading csv; not high priority
+        # TODO: also, reimplement hdf5 for new saving format
         group = self.repo[str(i)]
         num_Yh = len(group) - 1
         Yh = [np.array(group['Yh_' + str(j)]) 

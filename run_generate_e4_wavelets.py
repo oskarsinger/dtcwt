@@ -12,9 +12,10 @@ import whitehorses.loaders.shortcuts as dlsh
 @click.option('--data-path')
 @click.option('--save-dir')
 @click.option('--num-subperiods', default=288)
-@click.option('--interpolate', default=False)
+@click.option('--interpolate', default=True)
 @click.option('--max-freqs', default=7)
 @click.option('--max-hertz', default=4)
+@click.option('--magnitude', default=True)
 @click.option('--pr', default=False)
 @click.option('--overlap', default=True)
 @click.option('--csv', default=True)
@@ -25,11 +26,12 @@ def run_it_all_day_bb(
     interpolate,
     max_freqs,
     max_hertz,
+    magnitude,
     pr,
     overlap,
     csv):
 
-    loaders = dlsh.get_hr_and_acc_all_subjects(
+    loaders = dlsh.get_e4_loaders_all_subjects(
         data_path, max_hertz=max_hertz)
     servers = {s : [BS(dl) for dl in dls]
                for (s, dls) in loaders.items()}
@@ -45,7 +47,7 @@ def run_it_all_day_bb(
     servers = {s : [DTCWTM(
                         ds, 
                         save_dir, 
-                        magnitude=True,
+                        magnitude=magnitude,
                         pr=pr,
                         period=int(24*3600 / num_subperiods),
                         max_freqs=max_freqs,
@@ -55,8 +57,8 @@ def run_it_all_day_bb(
                     for ds in dss]
                for (s, dss) in servers.items()}
 
-    for s in servers:
-        for server in s:
+    for sl in servers.values():
+        for server in sl:
             server.get_data()
 
 if __name__=='__main__':

@@ -47,7 +47,7 @@ def get_wavelet_basis(wavelet_name):
 
 def get_padded_wavelets(Yh, Yl):
 
-    hi_and_lo = Yh + [Yl]
+    hi_and_lo = Yh# + [Yl]
     num_rows = hi_and_lo[0].shape[0]
     basis = np.zeros(
         (num_rows, len(hi_and_lo)),
@@ -55,11 +55,12 @@ def get_padded_wavelets(Yh, Yl):
     basis[:,0] = np.copy(hi_and_lo[0][:,0])
 
     for (i, y) in enumerate(hi_and_lo[1:]):
-        power = i + 1
+        interval = int(num_rows / y.shape[0])
 
-        for j in range(power):
-            max_len = basis[j::2**power,power].shape[0]
-            basis[j::2**power,power] = np.copy(y[:max_len,0])
+        for j in range(y.shape[0]):
+            begin = interval * j
+            end = begin + interval
+            basis[begin:end,i+1] = y[j]
 
     return basis
 
