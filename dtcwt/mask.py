@@ -40,6 +40,7 @@ class DTCWTMask:
         self.load = load
         self.save = save
         self.csv = csv
+        print(self.csv)
 
         self.window = int(self.period * self.hertz)
         self.w_window = int(self.window / 2)
@@ -63,7 +64,10 @@ class DTCWTMask:
             'p',
             str(self.period),
             'mf',
-            str(self.max_freqs)]) + '.hdf5'
+            str(self.max_freqs)])
+
+        if not self.csv:
+            name += '.hdf5'
 
         self.save_load_path = os.path.join(
             save_load_path, name)
@@ -193,13 +197,9 @@ class DTCWTMask:
         key = str(i)
         
         if self.csv:
-            dir_path = os.path.join(self.save_load_path, key)
-
-            os.mkdir(dir_path)
-
             file_path = os.path.join(
-                dir_path,
-                'wavelets' + '.csv')
+                self.save_load_path,
+                str(i) + 'wavelets' + '.csv')
 
             np.savetxt(
                 file_path,   
