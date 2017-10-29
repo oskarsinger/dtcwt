@@ -8,7 +8,7 @@ from dtcwt.utils import get_padded_wavelets as get_pw
 from dtcwt.utils import get_wavelet_basis as get_wb
 from dtcwt.oned import get_partial_reconstructions as get_pr
 from dtcwt.oned import dtwavexfm
-from linal.utils.misc import get_array_mod
+from theline.utils.misc import get_array_mod
 from math import log
 
 # TODO: implement CSV loading
