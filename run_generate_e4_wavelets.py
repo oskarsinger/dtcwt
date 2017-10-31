@@ -13,11 +13,11 @@ import whitehorses.loaders.shortcuts as dlsh
 @click.option('--save-dir')
 @click.option('--num-subperiods', default=288)
 @click.option('--interpolate', default=True)
-@click.option('--max-freqs', default=7)
+@click.option('--max-freqs', default=100)
 @click.option('--max-hertz', default=1.0)
 @click.option('--magnitude', default=True)
 @click.option('--pr', default=False)
-@click.option('--overlap', default=True)
+@click.option('--overlap', default=False)
 @click.option('--csv', default=True)
 def run_it_all_day_bb(
     data_path,

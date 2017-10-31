@@ -21,7 +21,7 @@ class DTCWTMask:
         max_freqs=7,
         pr=False,
         magnitude=False,
-        serve_one_period=True,
+        serve_one_period=False,
         overlap=False,
         load=False,
         save=False,
@@ -40,7 +40,6 @@ class DTCWTMask:
         self.load = load
         self.save = save
         self.csv = csv
-        print(self.csv)
 
         self.window = int(self.period * self.hertz)
         self.w_window = int(self.window / 2)
