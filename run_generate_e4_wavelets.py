@@ -14,7 +14,7 @@ import whitehorses.loaders.shortcuts as dlsh
 @click.option('--num-subperiods', default=288)
 @click.option('--interpolate', default=True)
 @click.option('--max-freqs', default=7)
-@click.option('--max-hertz', default=4)
+@click.option('--max-hertz', default=1.0)
 @click.option('--magnitude', default=True)
 @click.option('--pr', default=False)
 @click.option('--overlap', default=True)
