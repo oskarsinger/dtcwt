@@ -31,7 +31,7 @@ class DTCWTMask:
         self.ds = ds
         self.overlap = overlap
         self.period = period
-        self.hertz = self.ds.get_status()['data_loader'].get_status()['hertz']
+        self.hertz = self.ds.get_status()['data_loader'].hertz
         self.max_freqs = max_freqs
         self.save_load_path = save_load_path
         self.pr = pr
