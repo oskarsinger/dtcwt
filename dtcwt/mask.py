@@ -57,7 +57,7 @@ class DTCWTMask:
         name = '_'.join([
             's',
             dl.name(),
-            dl.subject,
+            str(dl.subject),
             'f',
             str(self.hertz),
             'p',
@@ -71,8 +71,9 @@ class DTCWTMask:
         self.save_load_path = os.path.join(
             save_load_path, name)
 
-        if self.load:
+        num_batches = None
 
+        if self.load:
             repo = None
 
             if self.csv:
